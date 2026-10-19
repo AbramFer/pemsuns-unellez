@@ -4,7 +4,15 @@
 [![Documentos Catalogados](https://img.shields.io/badge/documentos-501%20catalogados-blue.svg)](catalog.json)
 [![Licencia](https://img.shields.io/badge/licencia-MIT%20%2F%20Abierta-orange.svg)](LICENSE)
 [![Sin dependencias](https://img.shields.io/badge/stack-Vanilla%20HTML%2FCSS%2FJS-yellow.svg)](index.html)
+[![Demo en Vivo](https://img.shields.io/badge/demo-GitHub%20Pages-success.svg)](https://abramfer.github.io/pemsuns-unellez/)
 
+
+> [!TIP]
+> 🌐 **Explorador en Vivo Disponible:**  
+> Puedes consultar, buscar y visualizar todos los pensums oficiales directamente desde tu navegador sin instalar nada en:  
+> 👉 **[https://abramfer.github.io/pemsuns-unellez/](https://abramfer.github.io/pemsuns-unellez/)**
+
+---
 Repositorio abierto y colaborativo para la **recuperación, indexación, auditoría y consulta interactiva** de los planes de estudio, mallas curriculares y especificaciones de subproyectos oficiales de la **Universidad Nacional Experimental de los Llanos Occidentales «Ezequiel Zamora» (UNELLEZ — *«La Universidad Que Siembra»*)**.
 
 ---
