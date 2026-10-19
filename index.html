@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador y Visor de Pensums UNELLEZ | Repositorio Oficial</title>
+    <meta name="description" content="Explorador, buscador y visor de documentos curriculares, pensums y contenidos programáticos de la UNELLEZ.">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+</head>
+<body>
+    <!-- Ambient Background Glows -->
+    <div class="ambient-glow" aria-hidden="true">
+        <div class="glow-orb glow-1"></div>
+        <div class="glow-orb glow-2"></div>
+        <div class="glow-orb glow-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="header-brand">
+                <img src="assets/logo.png" alt="UNELLEZ Logo" class="brand-logo" onerror="this.style.display='none'">
+                <div class="brand-text">
+                    <h1>
+                        <i class="fas fa-book-bookmark" style="color: var(--accent-emerald);"></i>
+                        UNELLEZ Pensums & Contenidos
+                    </h1>
+                    <p>Explorador inteligente y visor documental de la Universidad que Siembra</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="catalogo_pensums_unellez.md" target="_blank" class="nav-link-btn" title="Ver catálogo general en Markdown">
+                    <i class="fas fa-file-lines"></i> Catálogo MD
+                </a>
+                <a href="materias_administracion_agropecuaria.md" target="_blank" class="nav-link-btn" title="Ver pensum de Administración Agropecuaria">
+                    <i class="fas fa-wheat-awn"></i> Admón Agropecuaria
+                </a>
+                <a href="catalog.json" target="_blank" class="nav-link-btn" title="Ver base de datos JSON completa">
+                    <i class="fas fa-database"></i> JSON Raw
+                </a>
+            </div>
+        </header>
+
+        <!-- Stats Ribbon -->
+        <section class="stats-ribbon" aria-label="Estadísticas de Documentos">
+            <div class="stat-card">
+                <div class="stat-icon icon-emerald">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-num" id="stat-total">501</div>
+                    <div class="stat-label">Documentos Indexados</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-blue">
+                    <i class="fas fa-hard-drive"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-num" id="stat-local">39</div>
+                    <div class="stat-label">Descargados en Local</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-amber">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-num" id="stat-pages">6,800+</div>
+                    <div class="stat-label">Páginas de Contenido</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-purple">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-num">HTTP 200</div>
+                    <div class="stat-label">Servidor UNELLEZ Activo</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Filters Toolbar -->
+        <section class="toolbar-section" aria-label="Barra de Búsqueda y Filtros">
+            <!-- Search Bar -->
+            <div class="search-bar-wrapper">
+                <i class="fas fa-magnifying-glass search-icon"></i>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    class="search-input" 
+                    placeholder="Buscar materia, código, subproyecto, carrera (ej. Agropecuaria, Matemática, Derecho, 15797053082)..."
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <div class="search-actions">
+                    <button id="clear-search-btn" class="clear-search-btn" title="Limpiar búsqueda">
+                        <i class="fas fa-xmark"></i>
+                    </button>
+                    <span class="search-shortcut">/</span>
+                </div>
+            </div>
+
+            <!-- Category Pills & Controls -->
+            <div class="filters-row">
+                <div class="category-pills" id="category-pills">
+                    <!-- Dynamic Pills -->
+                </div>
+                <div class="toolbar-secondary">
+                    <select id="sort-select" class="sort-select" title="Ordenar documentos">
+                        <option value="newest">Más recientes primero</option>
+                        <option value="oldest">Más antiguos primero</option>
+                        <option value="pages-desc">Mayor número de páginas</option>
+                        <option value="alpha-asc">Alfabético (A - Z)</option>
+                        <option value="code-asc">Código / Archivo</option>
+                    </select>
+
+                    <div class="view-toggle-btns" role="group" aria-label="Modo de vista">
+                        <button id="view-grid-btn" class="view-btn active" title="Vista en tarjetas">
+                            <i class="fas fa-grip"></i>
+                        </button>
+                        <button id="view-table-btn" class="view-btn" title="Vista en tabla">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Counter Bar -->
+        <div class="results-status-bar">
+            <div class="results-count">
+                Mostrando <strong id="results-count-num">0</strong> de <span id="total-count-num">0</span> documentos
+            </div>
+            <div class="results-hint" style="font-size: 0.8rem; color: var(--text-dim);">
+                Tip: Presiona <kbd style="background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px;">/</kbd> para buscar en cualquier momento
+            </div>
+        </div>
+
+        <!-- Documents Grid View -->
+        <main id="documents-grid" class="documents-grid">
+            <!-- Dynamic Cards -->
+        </main>
+
+        <!-- Documents Table View -->
+        <div id="documents-table-container" class="documents-table-container">
+            <table class="documents-table">
+                <thead>
+                    <tr>
+                        <th>Archivo</th>
+                        <th>Subproyecto / Materia</th>
+                        <th>Área / Categoría</th>
+                        <th>Págs</th>
+                        <th>Fecha</th>
+                        <th>Almacenamiento</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state">
+            <i class="fas fa-file-circle-question empty-icon"></i>
+            <h3>No se encontraron documentos</h3>
+            <p>Intenta con otros términos de búsqueda o selecciona otra categoría en los filtros superiores.</p>
+        </div>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div id="pdf-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-pdf-title">
+        <div id="modal-window" class="modal-window">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <span id="modal-pdf-badge"></span>
+                    <h2 id="modal-pdf-title" class="modal-title">Cargando documento...</h2>
+                </div>
+                <div class="modal-actions">
+                    <button id="modal-copy-link-btn" class="nav-link-btn" title="Copiar enlace del PDF">
+                        <i class="fas fa-link"></i> Copiar Link
+                    </button>
+                    <a id="modal-download-btn" href="#" target="_blank" class="nav-link-btn" title="Descargar PDF">
+                        <i class="fas fa-download"></i> Descargar
+                    </a>
+                    <a id="modal-external-btn" href="#" target="_blank" class="nav-link-btn" title="Abrir directo en servidor UNELLEZ">
+                        <i class="fas fa-arrow-up-right-from-square"></i> Servidor UNELLEZ
+                    </a>
+                    <button id="modal-fullscreen-btn" class="nav-link-btn" title="Pantalla completa">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button id="modal-close-btn" class="nav-link-btn" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.3);" title="Cerrar visor (Esc)">
+                        <i class="fas fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="iframe-loader" class="iframe-loading">
+                    <div class="spinner"></div>
+                    <p>Cargando visualizador de documento...</p>
+                </div>
+                <iframe id="pdf-frame" class="pdf-iframe" title="Visor de PDF"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Script -->
+    <script src="js/app.js?v=1.0"></script>
+</body>
+</html>
