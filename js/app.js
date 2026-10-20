@@ -146,7 +146,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const car = (d.carrera || "").toLowerCase();
         const fn = (d.filename || "").toLowerCase();
         const vic = (d.vicerrectorado || "").toLowerCase();
-        return title.includes(q) || sub.includes(q) || car.includes(q) || fn.includes(q) || vic.includes(q);
+        const cod = (d.codigo || "").toLowerCase();
+        const prog = (d.programa || "").toLowerCase();
+        const proy = (d.proyecto || "").toLowerCase();
+        const subprog = (d.subprograma || "").toLowerCase();
+        return title.includes(q) || sub.includes(q) || car.includes(q) || fn.includes(q) || vic.includes(q) || cod.includes(q) || prog.includes(q) || proy.includes(q) || subprog.includes(q);
       });
     }
 
@@ -223,7 +227,9 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <h3 class="card-title" title="Ver documento en visor">${doc.title || doc.filename}</h3>
           <div class="card-metadata">
-            ${doc.carrera ? `<div class="meta-item"><i class="fas fa-graduation-cap"></i> <span>${doc.carrera}</span></div>` : ""}
+            ${doc.codigo ? `<div class="meta-item"><i class="fas fa-barcode"></i> <code style="color: var(--accent-emerald); font-weight: 600;">${doc.codigo}</code> ${doc.semestre ? `&bull; Semestre ${doc.semestre}` : ""} ${doc.uc ? `&bull; ${doc.uc} U.C.` : ""}</div>` : ""}
+            ${doc.programa || doc.carrera ? `<div class="meta-item"><i class="fas fa-graduation-cap"></i> <span>${doc.programa || doc.carrera}</span></div>` : ""}
+            ${doc.proyecto ? `<div class="meta-item"><i class="fas fa-folder-tree"></i> <span>${doc.proyecto}</span></div>` : ""}
             ${doc.vicerrectorado ? `<div class="meta-item"><i class="fas fa-university"></i> <span>${doc.vicerrectorado}</span></div>` : ""}
             <div class="meta-item"><i class="fas fa-file-lines"></i> <span>${doc.pages ? doc.pages + " páginas" : "Documento PDF"}</span> &bull; <i class="fas fa-calendar-alt"></i> <span>${doc.date_str || "2022"}</span></div>
           </div>
@@ -263,7 +269,12 @@ document.addEventListener("DOMContentLoaded", () => {
         <td><code class="file-code">${doc.filename}</code></td>
         <td>
           <span class="table-doc-title" data-index="${idx}">${doc.title || doc.filename}</span>
-          ${doc.carrera ? `<div style="font-size: 0.78rem; color: #6b7280;">${doc.carrera}</div>` : ""}
+          <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 2px;">
+            ${doc.codigo ? `<code style="color: var(--accent-emerald); font-weight: 600;">${doc.codigo}</code> &bull; ` : ""}
+            ${doc.programa || doc.carrera || ""}
+            ${doc.semestre ? ` &bull; Sem ${doc.semestre}` : ""}
+            ${doc.uc ? ` &bull; ${doc.uc} U.C.` : ""}
+          </div>
         </td>
         <td><span class="category-tag ${getCategoryClass(doc.category || "")}">${doc.category || "General"}</span></td>
         <td>${doc.pages || "-"}</td>
