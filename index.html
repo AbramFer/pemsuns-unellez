@@ -211,7 +211,24 @@
             <div class="modal-body">
                 <div id="iframe-loader" class="iframe-loading">
                     <div class="spinner"></div>
-                    <p>Cargando visualizador de documento...</p>
+                    <p id="iframe-loader-text">Cargando visualizador de documento...</p>
+                </div>
+                <div id="iframe-fallback" class="iframe-fallback" style="display: none;">
+                    <div class="fallback-icon">
+                        <i class="fas fa-cloud-bolt"></i>
+                    </div>
+                    <h3 id="fallback-title">Servidor UNELLEZ no disponible</h3>
+                    <p id="fallback-desc">
+                        Este documento no se encuentra descargado en la carpeta local <code>pdf/</code> y el servidor institucional de la UNELLEZ está tardando en responder o bloquea la visualización dentro del navegador.
+                    </p>
+                    <div class="fallback-actions">
+                        <a id="fallback-external-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-action btn-primary">
+                            <i class="fas fa-arrow-up-right-from-square"></i> Intentar abrir en pestaña nueva
+                        </a>
+                        <button id="fallback-filter-local-btn" class="btn-action">
+                            <i class="fas fa-hard-drive"></i> Ver solo documentos locales (pdf/)
+                        </button>
+                    </div>
                 </div>
                 <iframe id="pdf-frame" class="pdf-iframe" title="Visor de PDF"></iframe>
             </div>
@@ -219,6 +236,6 @@
     </div>
 
     <!-- App Script -->
-    <script src="js/app.js?v=1.0"></script>
+    <script src="js/app.js?v=1.1"></script>
 </body>
 </html>

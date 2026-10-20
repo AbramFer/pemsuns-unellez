@@ -24,6 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalBadge = document.getElementById("modal-pdf-badge");
   const modalIframe = document.getElementById("pdf-frame");
   const modalLoader = document.getElementById("iframe-loader");
+  const modalLoaderText = document.getElementById("iframe-loader-text");
+  const modalFallback = document.getElementById("iframe-fallback");
+  const fallbackTitle = document.getElementById("fallback-title");
+  const fallbackDesc = document.getElementById("fallback-desc");
+  const fallbackExternalBtn = document.getElementById("fallback-external-btn");
+  const fallbackFilterLocalBtn = document.getElementById("fallback-filter-local-btn");
   const modalCloseBtn = document.getElementById("modal-close-btn");
   const modalDownloadBtn = document.getElementById("modal-download-btn");
   const modalExternalBtn = document.getElementById("modal-external-btn");
@@ -203,8 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const catClass = getCategoryClass(doc.category || "");
       const localBadge = doc.has_local
-        ? `<span class="local-badge"><i class="fas fa-check-circle"></i> Local</span>`
-        : "";
+        ? `<span class="local-badge"><i class="fas fa-check-circle"></i> Local (pdf/)</span>`
+        : `<span class="remote-badge"><i class="fas fa-cloud"></i> Servidor</span>`;
 
       const fileTargetUrl = doc.has_local ? doc.local_url : doc.url;
       const downloadAttr = doc.has_local ? `download="${doc.filename}"` : "";
@@ -249,6 +255,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const tr = document.createElement("tr");
       const fileTargetUrl = doc.has_local ? doc.local_url : doc.url;
       const downloadAttr = doc.has_local ? `download="${doc.filename}"` : "";
+      const storageBadge = doc.has_local
+        ? `<span class="local-badge"><i class="fas fa-check-circle"></i> Local (pdf/)</span>`
+        : `<span class="remote-badge"><i class="fas fa-cloud"></i> Servidor</span>`;
 
       tr.innerHTML = `
         <td><code class="file-code">${doc.filename}</code></td>
@@ -259,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td><span class="category-tag ${getCategoryClass(doc.category || "")}">${doc.category || "General"}</span></td>
         <td>${doc.pages || "-"}</td>
         <td>${doc.date_str || "Desconocida"}</td>
-        <td>${doc.has_local ? `<span class="local-badge"><i class="fas fa-check-circle"></i> Local</span>` : `<span style="color: #6b7280; font-size: 0.75rem;">Servidor</span>`}</td>
+        <td>${storageBadge}</td>
         <td>
           <div style="display: flex; gap: 6px;">
             <button class="btn-action btn-primary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="window.appOpenViewer(${idx})"><i class="fas fa-eye"></i> Ver</button>
@@ -277,45 +286,121 @@ document.addEventListener("DOMContentLoaded", () => {
     openPdfViewer(idx);
   };
 
-  function openPdfViewer(index) {
+  let loadTimeout = null;
+
+  async function openPdfViewer(index) {
     const doc = filteredDocs[index];
     if (!doc) return;
     activeModalIndex = index;
 
-    modalTitle.textContent = doc.title || doc.filename;
-    if (doc.has_local) {
-      modalBadge.innerHTML = `<span class="local-badge"><i class="fas fa-hard-drive"></i> Archivo Local</span>`;
-    } else {
-      modalBadge.innerHTML = `<span style="color: #60a5fa; font-size: 0.78rem; font-weight: 600;"><i class="fas fa-cloud"></i> Servidor UNELLEZ</span>`;
+    if (loadTimeout) {
+      clearTimeout(loadTimeout);
+      loadTimeout = null;
     }
 
-    const pdfTarget = doc.has_local ? doc.local_url : doc.url;
+    modalTitle.textContent = doc.title || doc.filename;
 
-    modalDownloadBtn.href = pdfTarget;
+    // Reset visual elements inside modal
+    if (modalFallback) modalFallback.style.display = "none";
+    modalIframe.style.display = "block";
+    modalLoader.style.display = "flex";
+    if (modalLoaderText) modalLoaderText.textContent = "Preparando visualizador...";
+
+    // Dynamic local folder check: if catalog had has_local: false, check if file exists in pdf/
+    if (!doc.has_local && doc.filename) {
+      if (modalLoaderText) modalLoaderText.textContent = "Comprobando disponibilidad local en pdf/...";
+      try {
+        const checkLocal = await fetch(`pdf/${doc.filename}`, { method: "HEAD" });
+        if (checkLocal.ok) {
+          doc.has_local = true;
+          doc.local_url = `pdf/${doc.filename}`;
+          updateGlobalStats();
+          renderCategoryPills();
+        }
+      } catch (err) {
+        // Continue with normal remote flow
+      }
+    }
+
+    // Configure badges, labels and download attributes
     if (doc.has_local) {
+      modalBadge.innerHTML = `<span class="local-badge"><i class="fas fa-hard-drive"></i> Archivo Local (pdf/)</span>`;
+      if (modalLoaderText) modalLoaderText.textContent = "Cargando archivo local desde pdf/...";
+      modalDownloadBtn.href = doc.local_url;
       modalDownloadBtn.setAttribute("download", doc.filename);
     } else {
+      modalBadge.innerHTML = `<span class="remote-badge"><i class="fas fa-cloud"></i> Servidor UNELLEZ</span>`;
+      if (modalLoaderText) modalLoaderText.textContent = "Conectando con el servidor UNELLEZ...";
+      modalDownloadBtn.href = doc.url;
       modalDownloadBtn.removeAttribute("download");
     }
 
     modalExternalBtn.href = doc.url;
 
-    // Show loading spinner
-    modalLoader.style.display = "flex";
-    modalIframe.src = pdfTarget;
-
-    modalIframe.onload = () => {
-      modalLoader.style.display = "none";
-    };
-
-    // Open modal
+    // Open modal immediately
     modalOverlay.classList.add("active");
     document.body.style.overflow = "hidden";
+
+    if (doc.has_local) {
+      modalIframe.src = doc.local_url;
+      modalIframe.onload = () => {
+        modalLoader.style.display = "none";
+      };
+      modalIframe.onerror = () => {
+        showFallbackError(doc);
+      };
+    } else {
+      // The UNELLEZ server is frequently down, times out, or blocks iframes (X-Frame-Options)
+      modalIframe.src = doc.url;
+
+      // Timeout fallback after 4 seconds
+      loadTimeout = setTimeout(() => {
+        if (modalLoader.style.display !== "none") {
+          showFallbackError(doc);
+        }
+      }, 4000);
+
+      modalIframe.onload = () => {
+        // If it loaded, stop the timeout and hide loader
+        if (loadTimeout) clearTimeout(loadTimeout);
+        modalLoader.style.display = "none";
+      };
+
+      modalIframe.onerror = () => {
+        showFallbackError(doc);
+      };
+    }
+  }
+
+  function showFallbackError(doc) {
+    if (loadTimeout) {
+      clearTimeout(loadTimeout);
+      loadTimeout = null;
+    }
+    modalLoader.style.display = "none";
+    modalIframe.style.display = "none";
+    if (modalFallback) {
+      modalFallback.style.display = "flex";
+      if (fallbackTitle) fallbackTitle.textContent = "Servidor UNELLEZ no disponible";
+      if (fallbackDesc) {
+        fallbackDesc.innerHTML = `
+          El archivo <code>${doc.filename}</code> no se encuentra en tu carpeta local <code>pdf/</code>.<br>
+          El servidor oficial de la UNELLEZ (<code>unellez.edu.ve</code>) actualmente no responde o bloquea la visualización dentro del navegador.
+        `;
+      }
+      if (fallbackExternalBtn) fallbackExternalBtn.href = doc.url;
+    }
   }
 
   function closePdfViewer() {
+    if (loadTimeout) {
+      clearTimeout(loadTimeout);
+      loadTimeout = null;
+    }
     modalOverlay.classList.remove("active");
     modalIframe.src = "";
+    if (modalFallback) modalFallback.style.display = "none";
+    modalIframe.style.display = "block";
     document.body.style.overflow = "";
     activeModalIndex = -1;
   }
@@ -381,6 +466,22 @@ document.addEventListener("DOMContentLoaded", () => {
     modalOverlay.addEventListener("click", (e) => {
       if (e.target === modalOverlay) closePdfViewer();
     });
+
+    if (fallbackFilterLocalBtn) {
+      fallbackFilterLocalBtn.addEventListener("click", () => {
+        closePdfViewer();
+        activeCategory = "local";
+        document.querySelectorAll(".pill-btn").forEach(b => {
+          if (b.textContent.includes("Descargados en Local")) {
+            b.classList.add("active");
+          } else {
+            b.classList.remove("active");
+          }
+        });
+        applyFilters();
+        showToast("Mostrando únicamente documentos descargados en pdf/");
+      });
+    }
 
     // Modal Copy Link
     modalCopyLinkBtn.addEventListener("click", () => {

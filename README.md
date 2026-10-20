@@ -72,7 +72,8 @@ pemsuns-unellez/
 ├── pdf/                                     # Copias locales de los documentos PDF
 ├── scripts/
 │   ├── validate_catalog.py                 # Validador de sintaxis y campos antes de hacer PR
-│   └── download_pdfs.py                    # Descargador masivo de los PDFs del catálogo
+│   ├── download_pdfs.py                    # Descargador masivo de los PDFs del catálogo
+│   └── sync_local_pdfs.py                  # Sincronizador de archivos locales con catalog.json
 ├── catalogo_pensums_unellez.md             # Tabla markdown con los 501 documentos indexados
 ├── materias_administracion_agropecuaria.md  # Pensum detallado de Administración Agropecuaria
 └── materias_economia_agricola.md            # Pensum detallado de Economía Agrícola (Semestres I al IX)
@@ -233,6 +234,10 @@ Analiza la sintaxis de `catalog.json`, verifica campos obligatorios y detecta du
 
 ### 2. `python3 scripts/download_pdfs.py`
 Lee todos los enlaces oficiales registrados en `catalog.json` y descarga de manera secuencial los archivos PDF a la carpeta local `pdf/`. Ideal para quien desee tener una réplica sin conexión de todo el acervo documental.
+
+### 3. `python3 scripts/sync_local_pdfs.py`
+Escanea la carpeta local `pdf/` y actualiza automáticamente los atributos `has_local` y `local_url` en `catalog.json` para cada archivo que esté presente en el disco. Úsalo cada vez que descargues o agregues nuevos PDFs para que el catálogo y el visor web reconozcan inmediatamente las copias locales sin depender de la estabilidad del servidor institucional.
+
 
 ---
 
