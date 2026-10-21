@@ -1,8 +1,9 @@
 # 🏛️ Explorador y Catálogo Comunitario de Pensums — UNELLEZ
 
 [![Rama master](https://img.shields.io/badge/branch-master-brightgreen.svg)](https://github.com/AbramFer/pemsuns-unellez/tree/master)
-[![Documentos Catalogados](https://img.shields.io/badge/documentos-501%20catalogados-blue.svg)](catalog.json)
+[![Documentos Catalogados](https://img.shields.io/badge/documentos-505%20catalogados-blue.svg)](catalog.json)
 [![Licencia](https://img.shields.io/badge/licencia-MIT%20%2F%20Abierta-orange.svg)](LICENSE)
+[![Changelog](https://img.shields.io/badge/changelog-v1.3.0-purple.svg)](CHANGELOG.md)
 [![Sin dependencias](https://img.shields.io/badge/stack-Vanilla%20HTML%2FCSS%2FJS-yellow.svg)](index.html)
 [![Demo en Vivo](https://img.shields.io/badge/demo-GitHub%20Pages-success.svg)](https://abramfer.github.io/pemsuns-unellez/)
 
@@ -40,7 +41,7 @@ Repositorio abierto y colaborativo para la **recuperación, indexación, auditor
 En el servidor institucional de la universidad (`https://unellez.edu.ve/material/pensums/`), el listado de directorios público se encuentra deshabilitado (Error `403 Forbidden`) y los nombres de los archivos PDF siguen un formato codificado por marcas de tiempo Unix (`timestamp` + sufijo).
 
 Mediante técnicas de ingeniería inversa, minería de Wayback Machine / Archive.org y análisis de metadatos, este proyecto:
-1. **Identificó y rescató 501 documentos oficiales** (mallas curriculares completas y especificaciones de subproyectos).
+1. **Identificó y rescató 505 documentos oficiales** (mallas curriculares completas y especificaciones de subproyectos).
 2. **Construyó una base de datos abierta (`catalog.json`)** asociando cada PDF con su Carrera, Código de Asignatura, Semestre, Unidades Crédito (U.C.), Prelaciones y Componentes de Formación.
 3. **Desarrolló una interfaz web moderna y ultrarrápida** para que cualquier estudiante o docente pueda buscar y previsualizar sus materias al instante sin depender de la estabilidad del servidor institucional.
 
