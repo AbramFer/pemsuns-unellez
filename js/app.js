@@ -203,6 +203,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cat.includes("Ingeniería") || cat.includes("Tecnología")) return "cat-ing";
     if (cat.includes("Mallas")) return "cat-malla";
     return "";
+  function getFriendlyDownloadName(doc) {
+    if (!doc) return "documento.pdf";
+    const namePart = (doc.subproyecto || doc.title || doc.filename).replace(/[\\/:*?"<>|]/g, "").trim();
+    if (doc.codigo) {
+      return `${doc.codigo} - ${namePart}.pdf`;
+    }
+    return `${namePart}.pdf`;
   }
 
   function renderGrid() {
@@ -217,7 +224,8 @@ document.addEventListener("DOMContentLoaded", () => {
         : `<span class="remote-badge"><i class="fas fa-cloud"></i> Servidor</span>`;
 
       const fileTargetUrl = doc.has_local ? doc.local_url : doc.url;
-      const downloadAttr = doc.has_local ? `download="${doc.filename}"` : "";
+      const downloadName = getFriendlyDownloadName(doc);
+      const downloadAttr = doc.has_local ? `download="${downloadName}"` : "";
 
       card.innerHTML = `
         <div>
@@ -260,7 +268,8 @@ document.addEventListener("DOMContentLoaded", () => {
     filteredDocs.forEach((doc, idx) => {
       const tr = document.createElement("tr");
       const fileTargetUrl = doc.has_local ? doc.local_url : doc.url;
-      const downloadAttr = doc.has_local ? `download="${doc.filename}"` : "";
+      const downloadName = getFriendlyDownloadName(doc);
+      const downloadAttr = doc.has_local ? `download="${downloadName}"` : "";
       const storageBadge = doc.has_local
         ? `<span class="local-badge"><i class="fas fa-check-circle"></i> Local (pdf/)</span>`
         : `<span class="remote-badge"><i class="fas fa-cloud"></i> Servidor</span>`;
@@ -338,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
       modalBadge.innerHTML = `<span class="local-badge"><i class="fas fa-hard-drive"></i> Archivo Local (pdf/)</span>`;
       if (modalLoaderText) modalLoaderText.textContent = "Cargando archivo local desde pdf/...";
       modalDownloadBtn.href = doc.local_url;
-      modalDownloadBtn.setAttribute("download", doc.filename);
+      modalDownloadBtn.setAttribute("download", getFriendlyDownloadName(doc));
     } else {
       modalBadge.innerHTML = `<span class="remote-badge"><i class="fas fa-cloud"></i> Servidor UNELLEZ</span>`;
       if (modalLoaderText) modalLoaderText.textContent = "Conectando con el servidor UNELLEZ...";
