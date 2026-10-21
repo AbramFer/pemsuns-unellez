@@ -203,6 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cat.includes("Ingeniería") || cat.includes("Tecnología")) return "cat-ing";
     if (cat.includes("Mallas")) return "cat-malla";
     return "";
+  }
+
   function getFriendlyDownloadName(doc) {
     if (!doc) return "documento.pdf";
     const namePart = (doc.subproyecto || doc.title || doc.filename).replace(/[\\/:*?"<>|]/g, "").trim();

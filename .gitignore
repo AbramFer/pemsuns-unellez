@@ -33,3 +33,10 @@ env/
 # Logs y Temporales
 *.log
 scratch/
+
+# Editor local privado (solo local, nunca subir)
+editor.php
+editor.py
+editor.html
+editor/
+editor_backups/
